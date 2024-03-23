@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+    <head>
+        <!-- Webpage Title -->
+        <title>One-page shopping mall</title>
+
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+              integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+              crossorigin="anonymous">
+
+        <!-- JS -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+                integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+                crossorigin="anonymous"></script>
+
+        <!-- Google Font -->
+        <link href="https://fonts.googleapis.com/css?family=Stylish&display=swap" rel="stylesheet">
+
+        <script type="text/javascript">
+   
+            function order() {
+                let name = $("#order-name").val();
+                let count = $("#order-count").val();
+                let address = $("#order-address").val();
+                let phone = $("#order-phone").val();
+
+                if (name == "") {
+                    alert("Please fill out name")
+                    $("#order-name").focus()
+                    return
+                } else if (count == "") {
+                    alert("Please fill out quantity")
+                    $("#order-count").focus()
+                    return
+                } else if (address == "") {
+                    alert("Please fill out address")
+                    $("#order-address").focus()
+                    return
+                } else if (phone == "") {
+                    alert("Please fill out phone number")
+                    $("#order-phone").focus()
+                    return
+                } else {
+                    alert('Order completed!')
+                   // return
+                }
+                let doc = {                   
+                    name_give: name,
+                    count_give: count,
+                    address_give: address,
+                    phone_give: phone
+                };
+
+                // Use POST API here
+                    $.ajax({
+                        type: 'POST',
+                        url: '/order',
+                        data: doc,
+                        success: function (response) {
+                            //console.log(response)
+                            alert(response['msg'])
+                            window.location.reload()
+                        }
+                    });
+                    $(document).ready(function () {
+                    $("#orders-box").html("");
+                    showOrders();
+                });
+            }
+
+            function showOrders() {
+                // Use READ API here                
+                $.ajax({
+                    type: 'GET',
+                    url: '/order',
+                    data: {},
+                    success: function (response) {
+                        let rows = response['order']
+                        for(let i = 0; i < orders.length; i++) {
+                            let order = orders[i]
+                            let name = orders[i]['name']
+                            let count = orders[i]['count']
+                            let address = orders[i]['address']
+                            let phone = orders[i]['phone']
+                            makeOrderRow(name,count,address,phone);
+                        }
+                    }
+                })
+            }
+
+
+            function makeOrderRow(name, count, address, phone) {
+                let tempHtml = `<tr>\
+                                <td>${name}</td>
+                                <td>${count}</td>
+                                <td>${address}</td>
+                                <td>${phone}</td>
+                              </tr>`
+
+                $("#orders-box").append(temp_html);
+            }
+        </script>
+
+        <style type="text/css">
+            * {
+                font-family: "Stylish", sans-serif;
+            }
+
+            h1, h5 {
+                display: inline;
+            }
+
+            .wrap {
+                width: 500px;
+                margin: auto;
+            }
+
+            .img {
+                background-image: url("https://www.fnp.com/images/pr/x/v20230616142928/black-n-gold-pillar-candle-set-of-3_4.jpg");
+                background-size: cover;
+                background-position: center;
+                width: 500px;
+                height: 300px;
+            }
+
+            .info {
+                margin-top: 20px;
+                margin-bottom: 20px;
+            }
+
+            .order {
+                text-align: center;
+            }
+
+            .orders {
+                margin-top: 100px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="wrap">
+            <div class="img"></div>
+            <div class="info">
+                <h1>Sparta Candles</h1>
+                <h5>Price: $3 each</h5>
+                <p>These candles actually have special power!</p>
+
+            <exchange class="rat">
+
+            </exchange>
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Your name</span>
+                    </div>
+                    <input type="text" class="form-control" id="order-name">
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="order-count">Quantity</label>
+                    </div>
+                    <select class="custom-select" id="order-count">
+                        <option selected value=""> -- Please select quantity --</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Address</span>
+                    </div>
+                    <input type="text" class="form-control" id="order-address">
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Phone number</span>
+                    </div>
+                    <input type="text" class="form-control" id="order-phone">
+                </div>
+                <div class="order">
+                    <button onclick="order()" type="button" class="btn btn-primary">Order</button>
+                </div>
+            </div>
+            <div class="orders">
+                <table class="table table-light">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Address</th>
+                        <th scope="col">Phone number</th>
+                    </tr>
+                    </thead>
+                    <tbody id="orders-box">
+                    <tr>
+                        <th scope="row">1</th>
+                        <td>Victoria</td>
+                        <td>3</td>
+                        <td>Seoul, Korea</td>
+                        <td>010-1234-5678</td>
+                    </tr>
+
+                    <tr>
+                        <th scope="row">2</th>
+                        <td>Lali</td>
+                        <td>2</td>
+                        <td>Bangalore, karnataka</td>
+                        <td>010-1234-5679</td>
+                    </tr>
+
+                    <tr>
+                        <th scope="row">3</th>
+                        <td>Eva</td>
+                        <td>1</td>
+                        <td>Bangalore, karnataka</td>
+                        <td>810-1234-5679</td>
+                    </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>
