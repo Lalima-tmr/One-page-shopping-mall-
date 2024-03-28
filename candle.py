@@ -1,4 +1,3 @@
-
 #importing necessary functions from dotenv library
 
 from flask import Flask, render_template, jsonify, request
@@ -19,21 +18,18 @@ def homework():
 # POST API
 @app.route('/order', methods=['POST'])
 def save_order():
-    name_receive = request.form['name_give']
-    count_receive = request.form['count_give']
-    address_receive = request.form['address_give']
-    phone_receive = request.form['phone_give']
+    name = request.form['name']
+    count = request.form['count']
+    address = request.form['address']
+    phone = request.form['phone']
+    print(name,count,address,phone)
 
-
-    doc = {
-        'name': name_receive,
-        'count': count_receive,
-        'address': address_receive,
-        'phone': phone_receive
-    }
-    
-
-    db.homework.insert_one(doc)
+    db.homework.insert_one ({
+        'name': name,
+        'count': count,
+        'address': address,
+        'phone': phone
+    })
 
     return jsonify({'result': 'success'})
 
@@ -41,7 +37,7 @@ def save_order():
 # Read API
 @app.route('/order', methods=['GET'])
 def view_orders():
-    orders = list(db.homework.find({}, {'_id': 0}))
+    orders = list(db.homework.find({}, {'_id': False}))
     return jsonify({'result': 'success', 'orders': orders})
 
 
