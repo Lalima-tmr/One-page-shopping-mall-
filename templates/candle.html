@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="ko">
+<html lang="en">
     <head>
         <!-- Webpage Title -->
         <title>One-page shopping mall</title>
@@ -26,54 +26,53 @@
         <script type="text/javascript">
    
             function order() {
-                let name = $("#order-name").val();
-                let count = $("#order-count").val();
-                let address = $("#order-address").val();
-                let phone = $("#order-phone").val();
+                let name = $("#name").val();
+                let count = $("#count").val();
+                let address = $("#address").val();
+                let phone = $("#phone").val();
 
                 if (name == "") {
                     alert("Please fill out name")
-                    $("#order-name").focus()
+                    $("#name").focus()
                     return
                 } else if (count == "") {
                     alert("Please fill out quantity")
-                    $("#order-count").focus()
+                    $("#count").focus()
                     return
                 } else if (address == "") {
                     alert("Please fill out address")
-                    $("#order-address").focus()
+                    $("#address").focus()
                     return
                 } else if (phone == "") {
                     alert("Please fill out phone number")
-                    $("#order-phone").focus()
+                    $("#phone").focus()
                     return
                 } else {
                     alert('Order completed!')
                    // return
                 }
-                let doc = {                   
-                    name_give: name,
-                    count_give: count,
-                    address_give: address,
-                    phone_give: phone
-                };
 
                 // Use POST API here
                     $.ajax({
                         type: 'POST',
                         url: '/order',
-                        data: doc,
+                        data: {
+                            name : name,
+                            count : count,
+                            address : address,
+                            phone : phone
+                        },
                         success: function (response) {
-                            //console.log(response)
-                            alert(response['msg'])
+                            alert(response['result'])
                             window.location.reload()
                         }
                     });
-                    $(document).ready(function () {
-                    $("#orders-box").html("");
-                    showOrders();
-                });
             }
+
+            $(document).ready(function () {
+                       //$("#orders-box").html("");
+                showOrders();
+            });
 
             function showOrders() {
                 // Use READ API here                
@@ -82,29 +81,25 @@
                     url: '/order',
                     data: {},
                     success: function (response) {
+                        $("#orders-box").empty();
                         let rows = response['order']
-                        for(let i = 0; i < orders.length; i++) {
-                            let order = orders[i]
-                            let name = orders[i]['name']
-                            let count = orders[i]['count']
-                            let address = orders[i]['address']
-                            let phone = orders[i]['phone']
-                            makeOrderRow(name,count,address,phone);
-                        }
-                    }
-                })
-            }
-
-
-            function makeOrderRow(name, count, address, phone) {
-                let tempHtml = `<tr>\
+                        for(let i = 0; i < rows.length; i++) {
+                            let name = rows[i]['name']
+                            let count = rows[i]['count']
+                            let address = rows[i]['address']
+                            let phone = rows[i]['phone']
+                            let tempHtml = `
+                            <tr>
                                 <td>${name}</td>
                                 <td>${count}</td>
                                 <td>${address}</td>
                                 <td>${phone}</td>
-                              </tr>`
+                              </tr>`;
+                             $("#orders-box").append(temp_html);
+                         } 
+                    }
 
-                $("#orders-box").append(temp_html);
+                });
             }
         </script>
 
@@ -142,6 +137,7 @@
             .orders {
                 margin-top: 100px;
             }
+
         </style>
     </head>
     <body>
@@ -193,7 +189,7 @@
                 <table class="table table-light">
                     <thead class="thead-dark">
                     <tr>
-                        <th scope="col">#</th>
+                        <!--<th scope="col">#</th>-->
                         <th scope="col">Name</th>
                         <th scope="col">Quantity</th>
                         <th scope="col">Address</th>
@@ -201,30 +197,6 @@
                     </tr>
                     </thead>
                     <tbody id="orders-box">
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Victoria</td>
-                        <td>3</td>
-                        <td>Seoul, Korea</td>
-                        <td>010-1234-5678</td>
-                    </tr>
-
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>Lali</td>
-                        <td>2</td>
-                        <td>Bangalore, karnataka</td>
-                        <td>010-1234-5679</td>
-                    </tr>
-
-                    <tr>
-                        <th scope="row">3</th>
-                        <td>Eva</td>
-                        <td>1</td>
-                        <td>Bangalore, karnataka</td>
-                        <td>810-1234-5679</td>
-                    </tr>
-
                     </tbody>
                 </table>
             </div>
